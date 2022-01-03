@@ -1,0 +1,12 @@
+[package]
+name = "astro-notation"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "A library for transcoding between hexadecimal strings in Astro Notation Format and Native Rust data types."
+repository = "https://github.com/stelar-software/rust-astro-notation"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
