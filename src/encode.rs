@@ -1,6 +1,12 @@
 
 use std::fmt::Write;
 
+pub fn str(arg: &str) -> String {
+    let buf: Vec<u8> = arg.to_string().into_bytes();
+    let res: String = hex(&buf);
+    res
+}
+
 pub fn u8(val: &u8) -> String {
     hex(&val.to_le_bytes().to_vec())
 }

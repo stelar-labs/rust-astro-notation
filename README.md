@@ -8,7 +8,7 @@ In your `Cargo.toml`:
 ```
 
 [dependencies]
-astro-notation = "1.0.0"
+astro-notation = "1.1.0"
 
 ```
 
@@ -21,12 +21,13 @@ use astro-notation::{encode, decode};
 ```
 
 ### Features
-- Represent integers, bytes & lists as hexadecimal strings.
+- Represent strings, integers, bytes & lists as hexadecimal strings.
 - Transcode between Astro Notation Format and Native Rust data types.
 
 ### Support
 | Type | Support |
 |---|---|
+| str | ✅ |
 | u8 | ✅ |
 | u16 | ✅ |
 | u32 | ✅ |
@@ -44,6 +45,18 @@ use astro-notation::{encode, decode};
 | bytes | ✅ |
 
 ### API
+
+`String`
+
+```
+
+let str: String = String::new("test");
+
+let astro_notation_str: String = encode::str(&int);
+
+let decoded_str: String = decode::as_u8(&astro_notation_str)?;
+
+```
 
 `Unsigned Integers`
 
@@ -84,4 +97,4 @@ let decoded_list: Vec<String> = decode::as_list(&astro_notation_list)?;
 ### Contribution
 Pull requests, bug reports and any kind of suggestion are welcome.
 
-2022-01-03
+2022-01-04

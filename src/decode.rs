@@ -4,6 +4,12 @@ use std::convert::TryInto;
 use std::error::Error;
 use std::num::ParseIntError;
 
+pub fn as_str(arg: &str) -> Result<String, Box<dyn Error>> {
+    let buf: Vec<u8> = hex(arg)?;
+    let res: String = str::from_utf8(&buf)?.to_string();
+    Ok(res)
+}
+
 pub fn as_u8(i: &str) -> Result<u8, Box<dyn Error>> {
     let buffer = hex(i)?;
     let o = u8::from_le_bytes(buffer.try_into().unwrap());
