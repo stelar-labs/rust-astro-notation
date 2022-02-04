@@ -1,5 +1,5 @@
 # Rust Astro Notation
-A library for transcoding between hexadecimal strings in Astro Notation Format and Native Rust data types.
+A library for transcoding between Astro Notation Format and Native Rust data types.
 
 ### Usage
 
