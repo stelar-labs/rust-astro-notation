@@ -8,7 +8,7 @@ In your `Cargo.toml`:
 ```
 
 [dependencies]
-astro-notation = "1.2.0"
+astro-notation = "1.2.1"
 
 ```
 

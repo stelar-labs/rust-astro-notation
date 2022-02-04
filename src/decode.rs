@@ -1,7 +1,6 @@
-
-use std::str;
-use std::convert::TryInto;
 use std::collections::HashMap;
+use std::convert::TryInto;
+use std::str;
 
 pub fn as_bool(arg: &str) -> bool {
     match arg {

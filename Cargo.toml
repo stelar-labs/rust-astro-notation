@@ -1,10 +1,10 @@
 
 [package]
 name = "astro-notation"
-version = "1.2.0"
+version = "1.2.1"
 edition = "2021"
 license = "MIT"
-description = "A library for transcoding between hexadecimal strings in Astro Notation Format and Native Rust data types."
+description = "A library for transcoding between Astro Notation Format and Native Rust data types."
 repository = "https://github.com/stelar-software/rust-astro-notation"
 readme = "README.md"
 

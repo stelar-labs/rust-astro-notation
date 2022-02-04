@@ -1,6 +1,4 @@
-
 use std::collections::HashMap;
-
 use astro_notation::{encode, decode};
 
 #[test]
