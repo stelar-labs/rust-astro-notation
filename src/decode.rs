@@ -1,130 +1,143 @@
 
 use std::str;
 use std::convert::TryInto;
-use std::error::Error;
-use std::num::ParseIntError;
+use std::collections::HashMap;
 
-pub fn as_str(arg: &str) -> Result<String, Box<dyn Error>> {
-    let buf: Vec<u8> = hex(arg)?;
-    let res: String = str::from_utf8(&buf)?.to_string();
-    Ok(res)
+pub fn as_bool(arg: &str) -> bool {
+    match arg {
+        "0x00" => false,
+        "0x01" => true,
+        _ => panic!("unsupported string as bool.")
+    }
 }
 
-pub fn as_u8(i: &str) -> Result<u8, Box<dyn Error>> {
-    let buffer = hex(i)?;
-    let o = u8::from_le_bytes(buffer.try_into().unwrap());
-    Ok(o)
+pub fn as_str(arg: &str) -> String {
+    str::from_utf8(&hex(arg)).unwrap().to_string()
 }
 
-pub fn as_u16(i: &str) -> Result<u16, Box<dyn Error>> {
-    let buffer = hex(i)?;
-    let o = u16::from_le_bytes(buffer.try_into().unwrap());
-    Ok(o)
+pub fn as_u8(i: &str) -> u8 {
+    u8::from_be_bytes(hex(i).try_into().unwrap())
 }
 
-pub fn as_u32(i: &str) -> Result<u32, Box<dyn Error>> {
-    let buffer = hex(i)?;
-    let o = u32::from_le_bytes(buffer.try_into().unwrap());
-    Ok(o)
+pub fn as_u16(i: &str) -> u16 {
+    u16::from_be_bytes(hex(i).try_into().unwrap())
 }
 
-pub fn as_u64(i: &str) -> Result<u64, Box<dyn Error>> {
-    let buffer = hex(i)?;
-    let o = u64::from_le_bytes(buffer.try_into().unwrap());
-    Ok(o)
+pub fn as_u32(i: &str) -> u32 {
+    u32::from_be_bytes(hex(i).try_into().unwrap())
 }
 
-pub fn as_u128(i: &str) -> Result<u128, Box<dyn Error>> {
-    let buffer = hex(i)?;
-    let o = u128::from_le_bytes(buffer.try_into().unwrap());
-    Ok(o)
+pub fn as_u64(i: &str) -> u64 {
+    u64::from_be_bytes(hex(i).try_into().unwrap())
 }
 
-pub fn as_bytes(i: &str) -> Result<Vec<u8>, Box<dyn Error>> {
-    let o = hex(i)?; Ok(o)
+pub fn as_u128(i: &str) -> u128 {
+    u128::from_be_bytes(hex(i).try_into().unwrap())
 }
 
-pub fn as_list(i: &str) -> Result<Vec<String>, Box<dyn Error>> {
+pub fn as_bytes(i: &str) -> Vec<u8> {
+    hex(i)
+}
 
-    let buffer = hex(i)?;
+pub fn as_list(arg: &str) -> Vec<String> {
 
-    let mut o: Vec<String> = Vec::new();
+    let buf = hex(arg);
 
-    let mut p: usize = 0;
+    match buf[0] {
+        
+        1 => {
 
-    while p < buffer.len() {
+            let mut res: Vec<String> = Vec::new();
 
-        let str_length_size: u8 = u8::from_le_bytes([buffer[p]]); p += 1;
+            let mut i: usize = 1;
+            
+            while i < buf.len() {
 
-        match str_length_size {
+                let item_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
 
-            1 => {
+                i += 4;
 
-                let str_length: usize = u8::from_le_bytes([buffer[p]]) as usize; p += 1;
+                let item_size: usize = u32::from_be_bytes(item_size_buf.try_into().unwrap()) as usize;
 
-                let str_bytes: Vec<u8> = buffer[p..p + str_length].to_vec(); p += str_length;
+                let item_buf: Vec<u8> = buf[i..(i + item_size)].to_vec();
 
-                let str: String = str::from_utf8(&str_bytes).unwrap().to_string();
+                i += item_size;
 
-                o.push(str)
+                let item: String = str::from_utf8(&item_buf).unwrap().to_string();
 
-            },
+                res.push(item)
 
-            2 => {
+            }
 
-                let str_length: usize = u16::from_le_bytes([buffer[p], buffer[p + 1]]) as usize; p += 2;
+            res
 
-                let str_bytes: Vec<u8> = buffer[p..p + str_length].to_vec(); p += str_length;
+        },
 
-                let str: String = str::from_utf8(&str_bytes).unwrap().to_string();
-
-                o.push(str)
-
-            },
-
-            4 => {
-
-                let str_length: usize = u32::from_le_bytes([buffer[p], buffer[p + 1], buffer[p + 2], buffer[p + 3]]) as usize;
-
-                p += 4;
-
-                let str_bytes: Vec<u8> = buffer[p..p + str_length].to_vec(); p += str_length;
-
-                let str: String = str::from_utf8(&str_bytes).unwrap().to_string();
-
-                o.push(str)
-                
-            },
-
-            8 => {
-
-                let str_length: usize = u64::from_le_bytes([buffer[p], buffer[p + 1], buffer[p + 2], buffer[p + 3], buffer[p + 4], buffer[p + 5], buffer[p + 6], buffer[p + 7]]) as usize;
-
-                p += 8;
-
-                let str_bytes: Vec<u8> = buffer[p..p + str_length].to_vec(); p += str_length;
-
-                let str: String = str::from_utf8(&str_bytes).unwrap().to_string();
-
-                o.push(str)
-                
-            },
-
-            _ => ()
-
-        }
+        _ => panic!("Unsupported Astro Notation Version")
 
     }
 
-    Ok(o)
+}
+
+pub fn as_hashmap(arg: &str) -> HashMap<String, String> {
+
+    let buf = hex(arg);
+
+    match buf[0] {
+        
+        1 => {
+
+            let mut res: HashMap<String, String> = HashMap::new();
+
+            let mut i: usize = 1;
+            
+            while i < buf.len() {
+
+                let map_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
+
+                i += 4;
+
+                let map_size: usize = u32::from_be_bytes(map_size_buf.try_into().unwrap()) as usize;
+
+                let map_end_index: usize = i + map_size;
+
+                let key_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
+
+                i += 4;
+
+                let key_size: usize = u32::from_be_bytes(key_size_buf.try_into().unwrap()) as usize;
+
+                let key_buf: Vec<u8> = buf[i..(i + key_size)].to_vec();
+
+                i += key_size;
+
+                let val_buf: Vec<u8> = buf[i..map_end_index].to_vec();
+
+                i = map_end_index;
+
+                let key: String = str::from_utf8(&key_buf).unwrap().to_string();
+
+                let val: String = str::from_utf8(&val_buf).unwrap().to_string();
+
+                res.insert(key, val);
+
+            }
+
+            res
+
+        },
+
+        _ => panic!("Unsupported Astro Notation Version")
+
+    }
 
 }
 
-fn hex(srt: &str) -> Result<Vec<u8>, ParseIntError> {
+fn hex(arg: &str) -> Vec<u8> {
     
-    (2..srt.len())
+    (2..arg.len())
         .step_by(2)
-        .map(|i| u8::from_str_radix(&srt[i..i + 2], 16))
+        .map(|i| u8::from_str_radix(&arg[i..i + 2], 16).unwrap())
         .collect()
 
 }

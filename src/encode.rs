@@ -1,101 +1,95 @@
 
+use std::collections::HashMap;
 use std::fmt::Write;
 
+pub fn bool(arg: &bool) -> String {
+    match arg {
+        true => "0x01".to_string(),
+        false => "0x00".to_string()
+    }
+}
+
 pub fn str(arg: &str) -> String {
-    let buf: Vec<u8> = arg.to_string().into_bytes();
-    let res: String = hex(&buf);
-    res
+    hex(&arg.to_string().into_bytes())
 }
 
-pub fn u8(val: &u8) -> String {
-    hex(&val.to_le_bytes().to_vec())
+pub fn u8(arg: &u8) -> String {
+    hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn u16(val: &u16) -> String {
-    hex(&val.to_le_bytes().to_vec())
+pub fn u16(arg: &u16) -> String {
+    hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn u32(val: &u32) -> String {
-    hex(&val.to_le_bytes().to_vec())
+pub fn u32(arg: &u32) -> String {
+    hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn u64(val: &u64) -> String {
-    hex(&val.to_le_bytes().to_vec())
+pub fn u64(arg: &u64) -> String {
+    hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn u128(val: &u128) -> String {
-    hex(&val.to_le_bytes().to_vec())
+pub fn u128(arg: &u128) -> String {
+    hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn bytes(val: &Vec<u8>) -> String {
-    hex(val)
+pub fn bytes(arg: &Vec<u8>) -> String {
+    hex(arg)
 }
 
-pub fn list(input: &Vec<String>) -> String {
+pub fn list(arg: &Vec<String>) -> String {
 
-    let mut buffer: Vec<u8> = Vec::new();
+    let mut buf: Vec<u8> = vec![1];
 
-    input
-        .iter()
-        .for_each(|x| {
+    for item in arg {
 
-            let str: Vec<u8> = x.to_string().into_bytes();
+        let item_buf: Vec<u8> = item.clone().into_bytes();
 
-            let str_length: usize = str.len();
+        let item_len: u32 = item_buf.len() as u32;
 
-            let mut str_length_size_bytes: Vec<u8> = Vec::new();
+        buf = [buf, item_len.to_be_bytes().to_vec(), item_buf].concat();
 
-            let mut str_length_bytes: Vec<u8> = Vec::new();
+    }
 
-            if str_length < 256 {
-
-                str_length_size_bytes = 1_u8.to_le_bytes().to_vec();
-
-                let str_length_as_u8: u8 = str_length as u8;
-
-                str_length_bytes = str_length_as_u8.to_le_bytes().to_vec();
-
-            } else if str_length < 65536 {
-
-                str_length_size_bytes = 2_u8.to_le_bytes().to_vec();
-
-                let str_length_as_u16: u16 = str_length as u16;
-
-                str_length_bytes = str_length_as_u16.to_le_bytes().to_vec();
-
-            } else if str_length < 4294967296 {
-
-                str_length_size_bytes = 4_u8.to_le_bytes().to_vec();
-
-                let str_length_as_u32: u32 = str_length as u32;
-
-                str_length_bytes = str_length_as_u32.to_le_bytes().to_vec();
-
-            } else {
-
-                str_length_size_bytes = 8_u8.to_le_bytes().to_vec();
-
-                let str_length_as_u64: u64 = str_length as u64;
-
-                str_length_bytes = str_length_as_u64.to_le_bytes().to_vec();
-
-            }
-
-            buffer = [buffer.clone(), str_length_size_bytes, str_length_bytes, str].concat();
-        
-        });
-
-    hex(&buffer)
+    hex(&buf)
 
 }
 
-fn hex(bytes: &Vec<u8>) -> String {
+pub fn hashmap(arg: &HashMap<String, String>) -> String {
 
-    let mut res = String::with_capacity((bytes.len() * 2) + 2);
+    let mut buf: Vec<u8> = vec![1];
+
+    for (key, val) in arg {
+
+        let key_buf: Vec<u8> = key.clone().into_bytes();
+
+        let key_len: u32 = key_buf.len() as u32;
+
+        let mut key_val_buf: Vec<u8> = key_len.to_be_bytes().to_vec();
+
+        key_val_buf = [key_val_buf, key_buf].concat();
+
+        let val_buf: Vec<u8> = val.clone().into_bytes();
+
+        key_val_buf = [key_val_buf, val_buf].concat();
+
+        let key_val_len: u32 = key_val_buf.len() as u32;
+
+        buf = [buf, key_val_len.to_be_bytes().to_vec(), key_val_buf].concat()
+
+    }
+
+    hex(&buf)
+    
+}
+
+fn hex(arg: &Vec<u8>) -> String {
+    
+    let mut res = String::new();
 
     res.push_str("0x");
 
-    for &byte in bytes {
+    for &byte in arg {
         write!(&mut res, "{:02X}", byte).unwrap();
     }
 
