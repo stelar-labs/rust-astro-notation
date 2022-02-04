@@ -8,7 +8,7 @@ In your `Cargo.toml`:
 ```
 
 [dependencies]
-astro-notation = "2.0.0"
+astro-notation = "1.2.0"
 
 ```
 
@@ -50,7 +50,7 @@ use astro_notation::{encode, decode};
 
 ```
 
-let astro_bool: String = encode::bool(true);
+let astro_bool: String = encode::bool(&true);
 
 let decoded_bool: bool = decode::as_bool(&astro_bool);
 
