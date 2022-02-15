@@ -38,49 +38,45 @@ pub fn bytes(arg: &Vec<u8>) -> String {
 
 pub fn list(arg: &Vec<String>) -> String {
 
-    let mut buf: Vec<u8> = vec![1];
+    let mut res: String = String::new();
 
     for item in arg {
 
-        let item_buf: Vec<u8> = item.clone().into_bytes();
+        if res != String::new() {
+            res.push_str(" ")
+        }
 
-        let item_len: u32 = item_buf.len() as u32;
+        let item_bytes: Vec<u8> = item.to_string().into_bytes();
 
-        buf = [buf, item_len.to_be_bytes().to_vec(), item_buf].concat();
+        res.push_str(&hex(&item_bytes))
 
     }
 
-    hex(&buf)
+    res
 
 }
 
-pub fn hashmap(arg: &HashMap<String, String>) -> String {
+// pub fn hashmap(arg: &HashMap<String, String>) -> String {
 
-    let mut buf: Vec<u8> = vec![1];
+//     let mut res: String = String::new();
 
-    for (key, val) in arg {
+//     for (key, val) in arg {
 
-        let key_buf: Vec<u8> = key.clone().into_bytes();
+//         if res != String::new() {
+//             res.push_str(" ")
+//         }
 
-        let key_len: u32 = key_buf.len() as u32;
+//         let key_str: String = hex(&key.to_string().into_bytes());
 
-        let mut key_val_buf: Vec<u8> = key_len.to_be_bytes().to_vec();
+//         let val_str: String = hex(&val.to_string().into_bytes());
 
-        key_val_buf = [key_val_buf, key_buf].concat();
+//         res.push_str(&format!("{}:{}", key_str, val_str))
 
-        let val_buf: Vec<u8> = val.clone().into_bytes();
+//     }
 
-        key_val_buf = [key_val_buf, val_buf].concat();
-
-        let key_val_len: u32 = key_val_buf.len() as u32;
-
-        buf = [buf, key_val_len.to_be_bytes().to_vec(), key_val_buf].concat()
-
-    }
-
-    hex(&buf)
+//     res
     
-}
+// }
 
 fn hex(arg: &Vec<u8>) -> String {
     

@@ -40,103 +40,48 @@ pub fn as_bytes(i: &str) -> Vec<u8> {
 
 pub fn as_list(arg: &str) -> Vec<String> {
 
-    let buf = hex(arg);
+    let mut res: Vec<String> = Vec::new();
 
-    match buf[0] {
-        
-        1 => {
+    let split_arg: Vec<&str> = arg.split(' ').collect();
 
-            let mut res: Vec<String> = Vec::new();
-
-            let mut i: usize = 1;
-            
-            while i < buf.len() {
-
-                let item_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
-
-                i += 4;
-
-                let item_size: usize = u32::from_be_bytes(item_size_buf.try_into().unwrap()) as usize;
-
-                let item_buf: Vec<u8> = buf[i..(i + item_size)].to_vec();
-
-                i += item_size;
-
-                let item: String = str::from_utf8(&item_buf).unwrap().to_string();
-
-                res.push(item)
-
-            }
-
-            res
-
-        },
-
-        _ => panic!("Unsupported Astro Notation Version")
-
+    for item in split_arg {
+        res.push(str::from_utf8(&hex(item)).unwrap().to_string())
     }
+
+    res
 
 }
 
 pub fn as_hashmap(arg: &str) -> HashMap<String, String> {
 
-    let buf = hex(arg);
+    let mut res: HashMap<String, String> = HashMap::new();
 
-    match buf[0] {
-        
-        1 => {
+    let split_arg: Vec<&str> = arg.split(' ').collect();
 
-            let mut res: HashMap<String, String> = HashMap::new();
+    for item in split_arg {
 
-            let mut i: usize = 1;
-            
-            while i < buf.len() {
+        let split_item: Vec<&str> = item.split(':').collect();
 
-                let map_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
+        let key: String = str::from_utf8(&hex(split_item[0])).unwrap().to_string();
 
-                i += 4;
+        let val: String = str::from_utf8(&hex(split_item[1])).unwrap().to_string();
 
-                let map_size: usize = u32::from_be_bytes(map_size_buf.try_into().unwrap()) as usize;
-
-                let map_end_index: usize = i + map_size;
-
-                let key_size_buf: Vec<u8> = buf[i..(i + 4)].to_vec();
-
-                i += 4;
-
-                let key_size: usize = u32::from_be_bytes(key_size_buf.try_into().unwrap()) as usize;
-
-                let key_buf: Vec<u8> = buf[i..(i + key_size)].to_vec();
-
-                i += key_size;
-
-                let val_buf: Vec<u8> = buf[i..map_end_index].to_vec();
-
-                i = map_end_index;
-
-                let key: String = str::from_utf8(&key_buf).unwrap().to_string();
-
-                let val: String = str::from_utf8(&val_buf).unwrap().to_string();
-
-                res.insert(key, val);
-
-            }
-
-            res
-
-        },
-
-        _ => panic!("Unsupported Astro Notation Version")
+        res.insert(key, val);
 
     }
+
+    res
 
 }
 
 fn hex(arg: &str) -> Vec<u8> {
+
+    let mut res: Vec<u8> = Vec::new();
     
     (2..arg.len())
         .step_by(2)
-        .map(|i| u8::from_str_radix(&arg[i..i + 2], 16).unwrap())
-        .collect()
+        .for_each(|x| res.push(u8::from_str_radix(&arg[x..x + 2], 16).unwrap()));
+
+    res
 
 }

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use astro_notation::{encode, decode};
 
 #[test]
@@ -27,13 +27,13 @@ fn list() {
     assert_eq!(list, decode::as_list(&encode::list(&list)))
 }
 
-#[test]
-fn hashmap() {
-    let hmap: HashMap<String, String> = HashMap::from([
-        ("key_1".to_string(), "val_1".to_string()),
-        ("key_2".to_string(), "val_2".to_string()),
-        ("key_3".to_string(), "val_3".to_string()),
-        ("key_4".to_string(), "val_4".to_string())
-    ]);
-    assert_eq!(hmap, decode::as_hashmap(&encode::hashmap(&hmap)))
-}
+// #[test]
+// fn hashmap() {
+//     let hmap: HashMap<String, String> = HashMap::from([
+//         ("key_1".to_string(), "val_1".to_string()),
+//         ("key_2".to_string(), "val_2".to_string()),
+//         ("key_3".to_string(), "val_3".to_string()),
+//         ("key_4".to_string(), "val_4".to_string())
+//     ]);
+//     assert_eq!(hmap, decode::as_hashmap(&encode::hashmap(&hmap)))
+// }

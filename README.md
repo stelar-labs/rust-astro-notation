@@ -8,7 +8,7 @@ In your `Cargo.toml`:
 ```
 
 [dependencies]
-astro-notation = "1.2.1"
+astro-notation = "3.0.0"
 
 ```
 
@@ -21,7 +21,7 @@ use astro_notation::{encode, decode};
 ```
 
 ### Features
-- Represent boolean, strings, integers, bytes, lists & hashmap as hexadecimal strings.
+- Represent boolean, strings, unsigned integers, bytes & lists as strings.
 - Transcode between Astro Notation Format and Native Rust data types.
 
 ### Support
@@ -106,7 +106,7 @@ let decoded_list: Vec<String> = decode::as_list(&astro_list);
 
 ```
 
-`HashMap`
+<!-- `HashMap`
 
 ```
 
@@ -121,10 +121,10 @@ let astro_hmap: String = encode::hashmap(&hmap);
 
 let decoded_hmap: HashMap<String, String> = decode::as_hashmap(&astro_hmap);
 
-```
+``` -->
 
 
 ### Contribution
 Pull requests, bug reports and any kind of suggestion are welcome.
 
-2022-02-04
+2022-02-15
