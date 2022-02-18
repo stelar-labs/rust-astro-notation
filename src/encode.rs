@@ -1,93 +1,70 @@
-use std::collections::HashMap;
 use std::fmt::Write;
 
-pub fn bool(arg: &bool) -> String {
-    match arg {
+pub fn bool(input: &bool) -> String {
+    match input {
         true => "0x01".to_string(),
         false => "0x00".to_string()
     }
 }
 
-pub fn str(arg: &str) -> String {
-    hex(&arg.to_string().into_bytes())
+pub fn str(input: &str) -> String {
+    hex(&input.to_string().into_bytes())
 }
 
-pub fn u8(arg: &u8) -> String {
-    hex(&arg.to_be_bytes().to_vec())
+pub fn u8(input: &u8) -> String {
+    hex(&input.to_be_bytes().to_vec())
 }
 
-pub fn u16(arg: &u16) -> String {
-    hex(&arg.to_be_bytes().to_vec())
+pub fn u16(input: &u16) -> String {
+    hex(&input.to_be_bytes().to_vec())
 }
 
 pub fn u32(arg: &u32) -> String {
     hex(&arg.to_be_bytes().to_vec())
 }
 
-pub fn u64(arg: &u64) -> String {
-    hex(&arg.to_be_bytes().to_vec())
+pub fn u64(input: &u64) -> String {
+    hex(&input.to_be_bytes().to_vec())
 }
 
-pub fn u128(arg: &u128) -> String {
-    hex(&arg.to_be_bytes().to_vec())
+pub fn u128(input: &u128) -> String {
+    hex(&input.to_be_bytes().to_vec())
 }
 
-pub fn bytes(arg: &Vec<u8>) -> String {
-    hex(arg)
+pub fn i8(input: &i8) -> String {
+    hex(&input.to_be_bytes().to_vec())
 }
 
-pub fn list(arg: &Vec<String>) -> String {
+pub fn i16(input: &i16) -> String {
+    hex(&input.to_be_bytes().to_vec())
+}
 
-    let mut res: String = String::new();
+pub fn i32(input: &i32) -> String {
+    hex(&input.to_be_bytes().to_vec())
+}
 
-    for item in arg {
+pub fn i64(input: &i64) -> String {
+    hex(&input.to_be_bytes().to_vec())
+}
 
-        if res != String::new() {
-            res.push_str(" ")
-        }
+pub fn i128(input: &i128) -> String {
+    hex(&input.to_be_bytes().to_vec())
+}
 
-        let item_bytes: Vec<u8> = item.to_string().into_bytes();
+pub fn bytes(input: &Vec<u8>) -> String {
+    hex(input)
+}
 
-        res.push_str(&hex(&item_bytes))
+fn hex(input: &Vec<u8>) -> String {
+    
+    let mut output = String::new();
 
+    output.push_str("0x");
+
+    for &byte in input {
+        write!(&mut output, "{:02X}", byte).unwrap();
     }
 
-    res
-
-}
-
-// pub fn hashmap(arg: &HashMap<String, String>) -> String {
-
-//     let mut res: String = String::new();
-
-//     for (key, val) in arg {
-
-//         if res != String::new() {
-//             res.push_str(" ")
-//         }
-
-//         let key_str: String = hex(&key.to_string().into_bytes());
-
-//         let val_str: String = hex(&val.to_string().into_bytes());
-
-//         res.push_str(&format!("{}:{}", key_str, val_str))
-
-//     }
-
-//     res
-    
-// }
-
-fn hex(arg: &Vec<u8>) -> String {
-    
-    let mut res = String::new();
-
-    res.push_str("0x");
-
-    for &byte in arg {
-        write!(&mut res, "{:02X}", byte).unwrap();
-    }
-
-    res
+    output
 
 }

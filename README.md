@@ -8,7 +8,7 @@ In your `Cargo.toml`:
 ```
 
 [dependencies]
-astro-notation = "3.0.0"
+astro-notation = "3.1.0"
 
 ```
 
@@ -33,11 +33,11 @@ use astro_notation::{encode, decode};
 | u32 | ✅ |
 | u64 | ✅ |
 | u128 | ✅ |
-| i8 | 🚧 |
-| i16 | 🚧 |
-| i32 | 🚧 |
-| i64 | 🚧 |
-| i128 | 🚧 |
+| i8 | ✅ |
+| i16 | ✅ |
+| i32 | ✅ |
+| i64 | ✅ |
+| i128 | ✅ |
 | f32 | 🚧 |
 | f64 | 🚧 |
 | bool | ✅ |
@@ -94,37 +94,22 @@ let decoded_bytes: Vec<u8> = decode::as_bytes(&astro_bytes);
 
 ```
 
-let list: Vec<String> = vec![
-    "one".to_string(),
-    "two".to_string(),
-    "three".to_string()
+use astro_notation::list;
+
+let list: Vec<Vec<u8>> = vec![
+    vec![1,2,3],
+    vec![4,5,6],
+    vec![7,8,9]
 ];
 
-let astro_list: String = encode::list(&list);
+let astro_list: String = list::from_bytes(&list);
 
-let decoded_list: Vec<String> = decode::as_list(&astro_list);
-
-```
-
-<!-- `HashMap`
+let decoded_list: Vec<Vec<u8>> = list::as_bytes(&astro_list);
 
 ```
-
-let hmap: HashMap<String, String> = HashMap::from([
-    ("key_1".to_string(), "val_1".to_string()),
-    ("key_2".to_string(), "val_2".to_string()),
-    ("key_3".to_string(), "val_3".to_string()),
-    ("key_4".to_string(), "val_4".to_string())
-]);
-
-let astro_hmap: String = encode::hashmap(&hmap);
-
-let decoded_hmap: HashMap<String, String> = decode::as_hashmap(&astro_hmap);
-
-``` -->
 
 
 ### Contribution
 Pull requests, bug reports and any kind of suggestion are welcome.
 
-2022-02-15
+2022-02-18
