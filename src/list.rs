@@ -1,7 +1,7 @@
 use crate::encode;
 use crate::decode;
 
-pub fn from_bytes(input: Vec<Vec<u8>>) -> String {
+pub fn to_str(input: Vec<Vec<u8>>) -> String {
 
     let mut output: String = String::new();
 
@@ -19,7 +19,7 @@ pub fn from_bytes(input: Vec<Vec<u8>>) -> String {
 
 }
 
-pub fn as_bytes(input: &str) -> Vec<Vec<u8>> {
+pub fn from_str(input: &str) -> Vec<Vec<u8>> {
 
     let mut output: Vec<Vec<u8>> = Vec::new();
 
